@@ -18,5 +18,5 @@ Learn Rust.
 
 ## Status
 
-**Started:** August 16, 2026
+**Started:** August 16, 2026<br>
 **Status:** In progress
