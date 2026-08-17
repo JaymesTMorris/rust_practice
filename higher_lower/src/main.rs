@@ -6,7 +6,7 @@ fn main() {
     let target: i32 = 76;
 
     print_starting_text();
-    game_loop();
+    game_loop(target);
     print_ending_text();
 }
 
@@ -32,10 +32,30 @@ fn get_user_input() -> String {
     return return_val;
 }
 
-fn game_loop () -> () {
+fn game_loop (target: i32) -> () {
     loop {
         let user_input = get_user_input();
+        let guess = user_input.parse::<i32>().unwrap();
         println!("{user_input}");
-        break;
+        match evaluate_guess(target, guess) {
+            0 => println!("Too Low!"),
+            1 => println!("Too High!"),
+            2 => break,
+            _ => println!("What have you done!"),
+        }
+    }
+}
+
+// If guess is...
+//   Too low, return 0
+//   Too high, return 1
+//   Correct, return 3
+fn evaluate_guess(target: i32, guess: i32) -> i32 {
+    if target > guess {
+        return 0;
+    } else if target < guess {
+        return 1;
+    } else {
+        return 2;
     }
 }
