@@ -1,9 +1,15 @@
-use std::io;
-use std::io::Write; // the trait that flush() is in
+use std::io::{self, Write}; // Write trait contains flush()
+// The rand crate provides higher level functionality, for example generation of 
+// floating-point values, uniform ranged sampling and shuffling sequences. In 
+// particular, rand::RngExt is an extension trait over Rng providing many of the 
+// methods one might expect to be able to use on an RNG.
+//     https://docs.rs/rand/latest/rand/trait.Rng.html
+//     https://docs.rs/rand/latest/rand/trait.RngExt.html
+use rand::RngExt;
 
 fn main() {
-    // setup vars
-    let target: i32 = 76;
+    let mut rng = rand::rng(); // you can't explict type this without out first importing ThreadRng
+    let target: i32 = rng.random_range(0..100);
 
     print_starting_text();
     game_loop(target);
@@ -27,21 +33,22 @@ fn get_user_input() -> String {
     io::stdout().flush().expect("flushed");
     io::stdin()
         .read_line(&mut return_val)
-        .unwrap();
+        .expect("Failed to read line");
     return_val = return_val.trim().to_string();
     return return_val;
 }
 
-fn game_loop (target: i32) -> () {
+fn game_loop(target: i32) -> () {
     loop {
         let user_input = get_user_input();
         let guess = user_input.parse::<i32>().unwrap();
         println!("{user_input}");
+
         match evaluate_guess(target, guess) {
             0 => println!("Too Low!"),
             1 => println!("Too High!"),
             2 => break,
-            _ => println!("What have you done!"),
+            _ => println!("What have you done?!"),
         }
     }
 }
