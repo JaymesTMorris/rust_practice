@@ -9,7 +9,7 @@ use rand::RngExt;
 
 fn main() {
     let mut rng = rand::rng(); // you can't explict type this without out first importing ThreadRng
-    let target: i32 = rng.random_range(0..100);
+    let target: i32 = rng.random_range(0..=100);
 
     print_starting_text();
     game_loop(target);
@@ -27,23 +27,44 @@ fn print_ending_text() -> () {
     println!("Please re-load the game to play again.");
 }
 
-fn get_user_input() -> String {
-    let mut return_val: String = String::new();
-    print!("Enter a number [1-100]: ");
-    io::stdout().flush().expect("flushed");
-    io::stdin()
-        .read_line(&mut return_val)
-        .expect("Failed to read line");
-    return_val = return_val.trim().to_string();
-    return return_val;
+// you don't need to use "return" to return
+fn get_user_input() -> i32 {
+    loop {
+        print!("Enter a number [1-100]: ");
+        io::stdout().flush().expect("flush failed");
+        
+        let mut input: String = String::new();
+        io::stdin()
+            .read_line(&mut input)
+            .expect("Failed to read line");
+        
+        let trimmed = input.trim();
+        
+        let guess: i32 = match trimmed.parse() {
+            Ok(n) => n,
+            Err(_) => {
+                println!("'{trimmed}' is not a vaild number.");
+                continue;
+            }
+        };
+
+        if (1..=100).contains(&guess) {
+            break guess; // loops normal are expected to return ()
+                         //   so in order to return guess from the loop you need to 
+                         //   tell it that you are done with the loop (using break)
+        } else {
+            println!("{guess} is not in range [1-100].");
+            continue;
+        }
+    }
 }
 
 fn game_loop(target: i32) -> () {
     loop {
-        let user_input = get_user_input();
-        let guess = user_input.parse::<i32>().unwrap();
-        println!("{user_input}");
+        let guess = get_user_input();
+        println!("{guess}");
 
+        // Should make this into an enum called guess_result, or similar
         match evaluate_guess(target, guess) {
             0 => println!("Too Low!"),
             1 => println!("Too High!"),
