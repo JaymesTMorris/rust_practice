@@ -7,6 +7,12 @@ use std::io::{self, Write}; // Write trait contains flush()
 //     https://docs.rs/rand/latest/rand/trait.RngExt.html
 use rand::RngExt;
 
+enum GuessResult {
+    TooHigh,
+    TooLow,
+    Equal,
+}
+
 fn main() {
     let mut rng = rand::rng(); // you can't explict type this without out first importing ThreadRng
     let target: i32 = rng.random_range(0..=100);
@@ -66,24 +72,19 @@ fn game_loop(target: i32) -> () {
 
         // Should make this into an enum called guess_result, or similar
         match evaluate_guess(target, guess) {
-            0 => println!("Too Low!"),
-            1 => println!("Too High!"),
-            2 => break,
-            _ => println!("What have you done?!"),
+            GuessResult::TooLow => println!("Too Low!"),
+            GuessResult::TooHigh => println!("Too High!"),
+            GuessResult::Equal => break,
         }
     }
 }
 
-// If guess is...
-//   Too low, return 0
-//   Too high, return 1
-//   Correct, return 3
-fn evaluate_guess(target: i32, guess: i32) -> i32 {
+fn evaluate_guess(target: i32, guess: i32) -> GuessResult {
     if target > guess {
-        return 0;
+        GuessResult::TooLow
     } else if target < guess {
-        return 1;
+        GuessResult::TooHigh
     } else {
-        return 2;
+        GuessResult::Equal
     }
 }
