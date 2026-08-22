@@ -16,6 +16,7 @@ fn main() {
     print_starting_text();
     game_loop(target);
     print_ending_text();
+    ask_if_play_again();
 }
 
 fn print_starting_text() -> () {
@@ -26,7 +27,6 @@ fn print_starting_text() -> () {
 
 fn print_ending_text() -> () {
     println!("You won!");
-    println!("Please re-load the game to play again.");
 }
 
 // you don't need to use "return" to return
@@ -82,5 +82,21 @@ fn evaluate_guess(target: i32, guess: i32) -> GuessResult {
         GuessResult::TooHigh
     } else {
         GuessResult::Equal
+    }
+}
+
+fn ask_if_play_again() -> () {
+    print!("Would you like to play again? [Y/N]: ");
+    io::stdout().flush().expect("flush failed");
+
+    let mut answer : String = String::new();
+    io::stdin()
+        .read_line(&mut answer)
+        .expect("Failed to read line");
+
+    let trimmed = answer.trim();
+
+    if trimmed == "y" || trimmed == "Y" {
+        main();
     }
 }
