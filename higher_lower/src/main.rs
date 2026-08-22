@@ -6,12 +6,8 @@ use std::io::{self, Write}; // Write trait contains flush()
 //     https://docs.rs/rand/latest/rand/trait.Rng.html
 //     https://docs.rs/rand/latest/rand/trait.RngExt.html
 use rand::RngExt;
-
-enum GuessResult {
-    TooHigh,
-    TooLow,
-    Equal,
-}
+mod guess_result;
+use guess_result::GuessResult;
 
 fn main() {
     let mut rng = rand::rng(); // you can't explict type this without out first importing ThreadRng
